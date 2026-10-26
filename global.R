@@ -19,8 +19,8 @@ df_enquete_raw <- read_csv2("Data/enquete_data_raw.csv")
 # 3. TRAITEMENTS DES DONNEES -----------------------------
 
 ## Liste des variables B2 pour afficher dans UI
-# La fonction grep() permet de récuperer le colonnes dont le nom commence par "B2_frequence_utilisation_"
 
+# La fonction grep() permet de récuperer le colonnes dont le nom commence par "B2_frequence_utilisation_"
 vars_b2 <- grep(
   pattern = "^B2_frequence_utilisation_",
   x = names(df_enquete_raw),
@@ -28,7 +28,7 @@ vars_b2 <- grep(
 )
 
 ## Exclusion des répondants non admissibles
-## On exclue tout étudiant 
+## On exclue tout étudiant, tout ceux en recherche d'emploi et "autre"
 
 df_enquete <- df_enquete_raw |>
   filter(
@@ -40,6 +40,8 @@ df_enquete <- df_enquete_raw |>
 
 
 ## Recodage des postes et du genre
+## Les chargés d'études et statisticiens sont regroupés.
+## Les genres manquants apparaissent sous « Non renseigné ».
 
 df_enquete <- df_enquete |>
   mutate(
@@ -66,6 +68,7 @@ df_enquete <- df_enquete |>
 
 
 ## Traitement des non-réponses à A4, A5 et A6
+## Les non-réponses de A4, A5 et A6 apparaissent sous « Non-réponse ».
 
 df_enquete <- df_enquete |>
   mutate(
@@ -102,7 +105,7 @@ df_enquete <- df_enquete |>
 # 4. PREPARATION DES DONNEES B2 --------------------------
 
 ## Regrouper les outils dans une seule variable afin d'éviter 13 colonnes de répétitions
-
+#df_b2_long contient une ligne par réponse admissible et par outil, avec les valeurs manquantes de fréquence remplacées par « Jamais ».
 df_b2_long <- df_enquete |>
   pivot_longer(
     cols = all_of(vars_b2),
@@ -111,7 +114,7 @@ df_b2_long <- df_enquete |>
     values_to = "frequence"
   )
 
-# Zone de vérification 
+# 5. Zone de vérification ----------------------
 # Nombre de répondants conservés
 
 nrow(df_enquete)
