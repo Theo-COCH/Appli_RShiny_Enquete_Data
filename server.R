@@ -146,6 +146,7 @@ function(input, output, session) {
       
     } else {
       
+
       ggplot(
         donnees,
         aes(
@@ -178,12 +179,15 @@ function(input, output, session) {
         scale_x_continuous(
           breaks = seq(0, 100, 20),
           labels = function(x) paste0(x, "%"),
-          limits = c(0, 100),
+          # limits = c(0, 100), A NE PAS UTILISER !!
           expand = c(0, 0)
         ) +
+        coord_cartesian(xlim = c(0, 100)) +
+        # coord_cartesian() conserve les données et ajuste uniquement la fenêtre visible du graphique.
+        
         scale_fill_manual(
           values = c(
-            "Jamais" = "grey75",
+            "Jamais" = "grey",
             "Occasionnellement" = "dodgerblue2",
             "Régulièrement" = "royalblue4"
           ),
@@ -234,7 +238,4 @@ function(input, output, session) {
   hover = TRUE,
   digits = 1
   )
-  
 }
-
-

@@ -28,7 +28,7 @@ vars_b2 <- grep(
 )
 
 ## Exclusion des répondants non admissibles
-## On exclue tout étudiant, tout ceux en recherche d'emploi et "autre"
+## On exclue tout statut étudiant, tout ceux en recherche d'emploi et les postes "Autre"
 
 df_enquete <- df_enquete_raw |>
   filter(
@@ -133,5 +133,3 @@ df_enquete |>
 
 df_b2_long |>
   count(outil, frequence)
-
-
