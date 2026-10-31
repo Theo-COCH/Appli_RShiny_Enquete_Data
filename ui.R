@@ -85,10 +85,17 @@ fluidPage(
       }
 
       .footer-data {
-        color: #A9BCD8;
-        text-align: center;
-        padding: 22px 0;
+        text-align: left;
+        color: #24B8B0;
         font-size: 12px;
+        padding: 15px 0;
+      }
+      
+      .footer-author {
+        text-align: right;
+        color: #F3F7FF;
+        font-size: 12px;
+        padding: 15px 0;
       }
     "))
   ),
@@ -99,7 +106,7 @@ fluidPage(
     
     title = tagList(
       icon("chart-line"),
-      " DATA PULSE"
+      "ENQUÊTE DATA"
     ),
     
     id = "navigation",
@@ -121,7 +128,7 @@ fluidPage(
           div(
             class = "page-header-data",
             
-            h2("Observatoire des métiers de la data"),
+            h2("Observation des métiers de la data"),
             
             p(
               "Explorez les réponses de l'enquête ",
@@ -239,15 +246,21 @@ fluidPage(
         )
       ),
       
-      # Piedde page
+      # Pied de page
       
       fluidRow(
         column(
-          width = 12,
-          
+          width = 8,
           div(
             class = "footer-data",
-            "DATA PULSE | Analyse des réponses de l'enquête"
+            "ENQUÊTE DATA | Analyse des réponses de l'enquête"
+          )
+        ),
+        column(
+          width = 4,
+          div(
+            class = "footer-author",
+            "Réalisé par : AYEDJI Kokou - COCHET Théo"
           )
         )
       )

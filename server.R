@@ -103,6 +103,14 @@ function(input, output, session) {
     
     donnees <- resultats()
     
+    titre_question <- switch(
+      input$choix_question,
+      "A4" = "Dans quel secteur d'activité travaillent-ils ?",
+      "A5" = "Quelle est la fréquence du télétravail ?",
+      "A6" = "Depuis combien de temps exercent-ils dans leur métier ? (en années)",
+      "B2" = "À quelle fréquence utilisent-ils les différents outils ?"
+    )
+    
     if (input$choix_question %in% c("A4", "A5", "A6")) {
       
       ggplot(
@@ -126,7 +134,9 @@ function(input, output, session) {
         labs(
           title = paste(
             "Résultats de la question",
-            input$choix_question
+            input$choix_question,
+            "-",
+            titre_question
           ),
           subtitle = "Effectifs et pourcentages",
           x = "Nombre de répondants",
