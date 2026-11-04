@@ -8,6 +8,7 @@ function(input, output, session) {
   
   ## Filtrer selon le poste et le genre
   
+  # reactive() permet le recalcul des effectifs et des pourcentages selon la question choisie à partir des données filtrées
   df_filtre <- reactive({
     
     req(input$choix_poste, input$choix_genre)
@@ -95,13 +96,16 @@ function(input, output, session) {
   })
   
   
-  # Graphiques à afficher -----------------------------------------
-  
-  output$plot_resultats <- renderPlot({
+  # Graphiques interactifs avec ggiraph -----------------------------------------
+  # Le rendu du graphique interractif, on y integre les différents tooltips (ici infobulles)
+  # pour afficher les valeurs au passage de la souris.
+  output$plot_resultats <- renderGirafe({
     
     req(nrow(df_filtre()) > 0)
     
     donnees <- resultats()
+    
+    req(nrow(donnees) > 0)
     
     titre_question <- switch(
       input$choix_question,
@@ -113,14 +117,26 @@ function(input, output, session) {
     
     if (input$choix_question %in% c("A4", "A5", "A6")) {
       
-      ggplot(
+      # Graphiques A4, A5 et A6
+      
+      p <- ggplot(
         donnees,
         aes(
           x = effectif,
           y = reorder(reponse, effectif)
         )
       ) +
-        geom_col(fill = "dodgerblue3") +
+        geom_col_interactive(
+          aes(
+            tooltip = paste0(
+              "Réponse : ", reponse,
+              "\nEffectif : ", effectif,
+              "\nPourcentage : ", round(pourcentage, 1), "%"
+            ),
+            data_id = reponse
+          ),
+          fill = "dodgerblue3"
+        ) +
         geom_text(
           aes(
             label = paste0(
@@ -156,8 +172,9 @@ function(input, output, session) {
       
     } else {
       
-
-      ggplot(
+      # Graphique B2 : fréquences d'utilisation des outils
+      
+      p <- ggplot(
         donnees,
         aes(
           x = pourcentage,
@@ -165,7 +182,16 @@ function(input, output, session) {
           fill = frequence
         )
       ) +
-        geom_col(
+        geom_col_interactive(
+          aes(
+            tooltip = paste0(
+              "Outil : ", outil,
+              "\nFréquence : ", frequence,
+              "\nEffectif : ", effectif,
+              "\nPourcentage : ", round(pourcentage, 1), "%"
+            ),
+            data_id = paste(outil, frequence, sep = "_")
+          ),
           position = "stack"
         ) +
         geom_text(
@@ -189,12 +215,9 @@ function(input, output, session) {
         scale_x_continuous(
           breaks = seq(0, 100, 20),
           labels = function(x) paste0(x, "%"),
-          # limits = c(0, 100), A NE PAS UTILISER !!
           expand = c(0, 0)
         ) +
         coord_cartesian(xlim = c(0, 100)) +
-        # coord_cartesian() conserve les données et ajuste uniquement la fenêtre visible du graphique.
-        
         scale_fill_manual(
           values = c(
             "Jamais" = "grey",
@@ -213,7 +236,21 @@ function(input, output, session) {
         )
     }
     
+    # Transformation du graphique ggplot en graphique interactif
+    
+    girafe(
+      ggobj = p,
+      width_svg = 10,
+      height_svg = 7,
+      options = list(
+        opts_hover(
+          css = "stroke:#101B32;stroke-width:2px;cursor:pointer;"
+        )
+      )
+    )
+    
   })
+  
   
   
   # Tableau reporting -----------------------------

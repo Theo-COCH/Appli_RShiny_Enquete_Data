@@ -13,6 +13,8 @@ library(bslib)    # Personnalisation de l'interface
 # 2. CHARGEMENT DES DONNÉES ==========================
 
 ## Importation du fichier CSV
+# Importation des données brutes avec read_csv2 pour gérer correctement le séparateur
+
 
 df_enquete_raw <- read_csv2("Data/enquete_data_raw.csv")
 
@@ -29,6 +31,7 @@ vars_b2 <- grep(
 
 ## Exclusion des répondants non admissibles
 ## On exclue tout statut étudiant, tout ceux en recherche d'emploi et les postes "Autre"
+## Afin de ne garder que les professionnels actifs
 
 df_enquete <- df_enquete_raw |>
   filter(
@@ -107,6 +110,8 @@ df_enquete <- df_enquete |>
 ## Regrouper les outils dans une seule variable afin d'éviter 13 colonnes de répétitions
 #df_b2_long contient une ligne par réponse admissible et par outil, avec les valeurs manquantes de fréquence remplacées par « Jamais ».
 df_b2_long <- df_enquete |>
+  # Transformation des colonnes B2 ("plusieurs colonnes d'outils") en format ligne avec pivot_longer()
+  # (une ligne par outils et par répondant) pour permettre une agrégation et tracer le graphe empilé
   pivot_longer(
     cols = all_of(vars_b2),
     names_to = "outil",
@@ -114,22 +119,3 @@ df_b2_long <- df_enquete |>
     values_to = "frequence"
   )
 
-# 5. Zone de vérification ----------------------
-# Nombre de répondants conservés
-
-nrow(df_enquete)
-
-## Répartition des postes
-
-df_enquete |>
-  count(A3_poste)
-
-## Répartition des genres
-
-df_enquete |>
-  count(Y1A_genre)
-
-## Répartition des fréquences B2
-
-df_b2_long |>
-  count(outil, frequence)

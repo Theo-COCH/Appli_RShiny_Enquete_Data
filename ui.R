@@ -20,7 +20,11 @@ fluidPage(
   
   # STYLE PERSONNALISE ----------------------------
   
+  #Création avec le language HTML, d'un style pour chaque partie de l'application
+  
   tags$head(
+    # On intègre du CSS personnalisé pour remplacer le style de base par un visuel choisi manuelement
+    # Évidemment, il faut remplacer chaque instance individuellement
     tags$style(HTML("
       body {
         background-color: #101B32;
@@ -119,7 +123,7 @@ fluidPage(
       
       title = "Explorer les résultats",
       
-      # INTRODUCTION ----------------------------------
+      # INTRODUCTION ---------------------------
       
       fluidRow(
         column(
@@ -131,7 +135,7 @@ fluidPage(
             h2("Observation des métiers de la data"),
             
             p(
-              "Explorez les réponses de l'enquête ",
+              "Explorons les réponses de l'enquête ",
               "à travers les secteurs d'activité, ",
               "le télétravail, l'expérience professionnelle ",
               "et l'utilisation des outils data."
@@ -147,6 +151,7 @@ fluidPage(
       
       # FILTRES ET RESULTATS --------------------------
       
+      # Création d'une zone interractive à gauche.
       sidebarLayout(
         
         sidebarPanel(
@@ -155,10 +160,11 @@ fluidPage(
           
           h3("Paramètres"),
           
-          p("Personnalisez les résultats à afficher."),
+          p("Personnalise les résultats à afficher."),
           
           tags$hr(),
           
+          # La zone des filtres interractifs, permet le croisement de données. 
           selectInput(
             inputId = "choix_question",
             label = "Question de l'enquête",
@@ -208,6 +214,7 @@ fluidPage(
         ),
         
         # ZONE PRINCIPALE -----------------------------
+        # Emplacement réservé pour le graphe et le tableau
         
         mainPanel(
           
@@ -221,11 +228,11 @@ fluidPage(
               " Visualisation"
             ),
             
-            plotOutput(
-              outputId = "plot_resultats",
+            girafeOutput(
+              "plot_resultats",
               height = "520px",
               width = "100%"
-            )
+              )
           ),
           
           div(
